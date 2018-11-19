@@ -132,12 +132,22 @@ public class MovieSearch extends javax.swing.JFrame {
                 panelResults.removeAll();
                 panelResults.setSize(new Dimension(600, 228 * response.getSearch().size()));
                 panelResults.setPreferredSize(new Dimension(600, 228 * response.getSearch().size()));
-                for (SearchEntry result : results) {
-                    MovieInfoPanel mip = new MovieInfoPanel(result.getTitle(), result.getPoster(), result.getYear(), result.getImdbID(), result.getType());
-                    panelResults.add(mip);
-                }
-                revalidate();
-                repaint();
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fieldSearch.setEnabled(false);
+                        buttonSearch.setEnabled(false);
+                        for (SearchEntry result : results) {
+                            MovieInfoPanel mip = new MovieInfoPanel(result.getTitle(), result.getPoster(), result.getYear(), result.getImdbID(), result.getType());
+                            panelResults.add(mip);
+                            revalidate();
+                            repaint();
+                        }
+                        fieldSearch.setEnabled(true);
+                        buttonSearch.setEnabled(true);
+                    }
+                });
+                thread.start();
             } else {
                 panelResults.removeAll();
                 panelResults.setSize(new Dimension(600, 228));
